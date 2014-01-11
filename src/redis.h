@@ -168,6 +168,7 @@
 #define REDIS_SET 2
 #define REDIS_ZSET 3
 #define REDIS_HASH 4
+#define REDIS_MATRIX 5
 
 /* Objects encoding. Some kind of objects like Strings and Hashes can be
  * internally represented in multiple ways. The 'encoding' field of the object
@@ -181,6 +182,7 @@
 #define REDIS_ENCODING_INTSET 6  /* Encoded as intset */
 #define REDIS_ENCODING_SKIPLIST 7  /* Encoded as skiplist */
 #define REDIS_ENCODING_EMBSTR 8  /* Embedded sds string encoding */
+#define REDIS_ENCODING_MATRIX 9
 
 /* Defines related to the dump file format. To store 32 bits lengths for short
  * keys requires a lot of space, so we check the most significant 2 bits of
@@ -360,7 +362,8 @@
 #define REDIS_NOTIFY_ZSET (1<<7)        /* z */
 #define REDIS_NOTIFY_EXPIRED (1<<8)     /* x */
 #define REDIS_NOTIFY_EVICTED (1<<9)     /* e */
-#define REDIS_NOTIFY_ALL (REDIS_NOTIFY_GENERIC | REDIS_NOTIFY_STRING | REDIS_NOTIFY_LIST | REDIS_NOTIFY_SET | REDIS_NOTIFY_HASH | REDIS_NOTIFY_ZSET | REDIS_NOTIFY_EXPIRED | REDIS_NOTIFY_EVICTED)      /* A */
+#define REDIS_NOTIFY_MATRIX (1<<10)     /* e */
+#define REDIS_NOTIFY_ALL (REDIS_NOTIFY_GENERIC | REDIS_NOTIFY_STRING | REDIS_NOTIFY_LIST | REDIS_NOTIFY_SET | REDIS_NOTIFY_HASH | REDIS_NOTIFY_ZSET | REDIS_NOTIFY_EXPIRED | REDIS_NOTIFY_EVICTED | REDIS_NOTIFY_MATRIX)      /* A */
 
 /* Using the following macro you can run code inside serverCron() with the
  * specified period, specified in milliseconds.
@@ -1031,6 +1034,8 @@ robj *createStringObjectFromLongLong(long long value);
 robj *createStringObjectFromLongDouble(long double value);
 robj *createListObject(void);
 robj *createZiplistObject(void);
+robj *createMatrixObject(long long size, long long *shape);
+void freeMatrixObject(robj *o);
 robj *createSetObject(void);
 robj *createIntsetObject(void);
 robj *createHashObject(void);
@@ -1279,6 +1284,8 @@ void delCommand(redisClient *c);
 void existsCommand(redisClient *c);
 void setbitCommand(redisClient *c);
 void getbitCommand(redisClient *c);
+void xgetCommand(redisClient *c);
+void xsetCommand(redisClient *c);
 void setrangeCommand(redisClient *c);
 void getrangeCommand(redisClient *c);
 void incrCommand(redisClient *c);
