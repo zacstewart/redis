@@ -459,6 +459,8 @@ int rdbSaveObjectType(rio *rdb, robj *o) {
             return rdbSaveType(rdb,REDIS_RDB_TYPE_HASH);
         else
             redisPanic("Unknown hash encoding");
+    case REDIS_MATRIX:
+        return rdbSaveType(rdb,REDIS_RDB_TYPE_MATRIX);
     default:
         redisPanic("Unknown object type");
     }
@@ -588,6 +590,28 @@ int rdbSaveObject(rio *rdb, robj *o) {
             redisPanic("Unknown hash encoding");
         }
 
+    } else if (o->type == REDIS_MATRIX) {
+        printf("Saving matrix\n");
+
+        /*matrix *matrix = o->ptr;*/
+
+        /*if ((n = rdbSaveLongLongAsStringObject(rdb,matrix->dims)) == -1)*/
+            /*return -1;*/
+        /*nwritten += n;*/
+
+        /*int n_values = 1;*/
+        /*for (int i = 0; i < matrix->dims; i++) {*/
+            /*if ((n = rdbSaveLongLongAsStringObject(rdb,matrix->shape[i])) == -1)*/
+                /*return -1;*/
+            /*nwritten = n;*/
+            /*n_values *= matrix->shape[i];*/
+        /*}*/
+
+        /*for (int i = 0; i < n_values; i++) {*/
+            /*if ((n = rdbSaveDoubleValue(rdb,matrix->values[i])) == -1)*/
+                /*return -1;*/
+            /*nwritten += n;*/
+        /*}*/
     } else {
         redisPanic("Unknown object type");
     }
@@ -1024,6 +1048,7 @@ robj *rdbLoadObject(int rdbtype, rio *rdb) {
                 redisPanic("Unknown encoding");
                 break;
         }
+    } else if (rdbtype == REDIS_RDB_TYPE_MATRIX) {
     } else {
         redisPanic("Unknown object type");
     }
