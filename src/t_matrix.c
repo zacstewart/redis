@@ -7,6 +7,27 @@ void addReplyMatrixShape(redisClient *c, matrix *matrix) {
     }
 }
 
+void addReplyMatrixContent(redisClient *c, matrix *m) {
+    long long i, size = 1, reply_length = 1 + m->dims;
+
+    for (i = 0; i < m->dims; i++) {
+        size *= m->shape[i];
+    }
+
+    reply_length += size;
+
+    addReplyMultiBulkLen(c,reply_length);
+    addReplyBulkLongLong(c,m->dims);
+
+    for (i = 0; i < m->dims; i++) {
+        addReplyBulkLongLong(c,m->shape[i]);
+    }
+
+    for (i = 0; i < size; i++) {
+        addReplyBulkDouble(c,m->values[i]);
+    }
+}
+
 void xgetCommand(redisClient *c) {
     robj *xobj = lookupKeyWrite(c->db,c->argv[1]);
     long long dims = 0;
@@ -36,7 +57,7 @@ void xgetCommand(redisClient *c) {
 
     matrix *sub = matrixSlice(m, dims, index);
 
-    addReplyMatrixShape(c,sub);
+    addReplyMatrixContent(c,sub);
     matrixFree(sub);
 }
 
