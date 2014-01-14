@@ -34,7 +34,7 @@ void xgetCommand(redisClient *c) {
         getLongLongFromObjectOrReply(c,c->argv[j+2],&index[j],NULL);
     }
 
-    matrix *sub = sliceMatrix(m, dims, index);
+    matrix *sub = matrixSlice(m, dims, index);
 
     addReplyMatrixShape(c,sub);
     matrixFree(sub);

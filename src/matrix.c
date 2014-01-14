@@ -58,7 +58,7 @@ long long getReshapedIndex(matrix *m, long long index[]) {
     return idx;
 }
 
-matrix *sliceMatrix(matrix *m, long long dims, long long *index) {
+matrix *matrixSlice(matrix *m, long long dims, long long *index) {
     long long i, begin = 0, end = 0, stride = 1, newdims = 0, newsize = 1;
     long long beg_idx[dims], end_idx[dims], newshape[dims];
 
