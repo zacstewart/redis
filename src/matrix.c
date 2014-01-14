@@ -60,7 +60,7 @@ long long getReshapedIndex(matrix *m, long long index[]) {
 }
 
 matrix *matrixSlice(matrix *m, long long dims, long long *index) {
-    long long i, begin = 0, end = 0, stride = 1, newdims = 0, newsize = 1;
+    long long i, j, begin = 1, end = 0, stride = 1, newdims = 0, newsize = 1;
     long long beg_idx[dims], end_idx[dims], newshape[dims];
     matrix *sub;
 
@@ -81,13 +81,11 @@ matrix *matrixSlice(matrix *m, long long dims, long long *index) {
     begin = getReshapedIndex(m, beg_idx);
     end = getReshapedIndex(m, end_idx);
 
-    for (i = 0; i < newdims; i++)
-        newsize *= newshape[i];
-    long long newvalues[newsize];
-    for (i = begin; i <= end; i++)
-        newvalues[i] = m->values[i*stride];
+    for (i = 0; i < newdims; i++) newsize *= newshape[i];
 
-    memcpy(sub->values, newvalues, newsize*sizeof(*newvalues));
+    for (i = begin, j = 0; i <= end; i += stride) {
+        sub->values[j++] = m->values[i];
+    }
 
     return sub;
 }
