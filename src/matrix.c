@@ -95,7 +95,7 @@ double matrixGetValueAtIndex(matrix *matrix, long long index[]) {
 }
 
 int matrixSetValueAtIndex(matrix *matrix, long long index[], double value) {
-    matrix->values[getReshapedIndex(matrix, index)] = value;
-
-    return 1;
+    long long idx = getReshapedIndex(matrix, index);
+    memcpy(&matrix->values[idx],&value,sizeof(&value));
+    return 1; // TODO: error handling
 }
