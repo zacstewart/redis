@@ -21,6 +21,9 @@ void matrixPrint(matrix *m) {
 
 matrix *matrixCreate(long long dims, long long shape[]) {
     struct matrix *matrix;
+    long long size = 1;
+    int i;
+
     if ((matrix = zmalloc(sizeof(*matrix))) == NULL)
         return NULL;
 
@@ -30,9 +33,7 @@ matrix *matrixCreate(long long dims, long long shape[]) {
         return NULL;
     memcpy(matrix->shape,shape,dims*sizeof(*matrix->shape));
 
-    long long size = 1;
-    for (int i = 0; i < dims; i++)
-        size *= shape[i];
+    for (i = 0; i < dims; i++) size *= shape[i];
 
     if ((matrix->values = zcalloc(size*sizeof(*matrix->values))) == NULL)
         return NULL;
@@ -61,20 +62,21 @@ long long getReshapedIndex(matrix *m, long long index[]) {
 matrix *matrixSlice(matrix *m, long long dims, long long *index) {
     long long i, begin = 0, end = 0, stride = 1, newdims = 0, newsize = 1;
     long long beg_idx[dims], end_idx[dims], newshape[dims];
-
+    matrix *sub;
 
     for (i = 0; i < dims; i++) {
-      if (index[i] > 0)
-          stride += i * (m->shape[i] - 1);
-      else {
+      if (index[i] == -1) {
           newshape[newdims++] = m->shape[i];
+          beg_idx[i] = 0;
+          end_idx[i] = m->shape[i] - 1;
+      } else {
+          stride += i * (m->shape[i] - 1);
+          beg_idx[i] = index[i];
+          end_idx[i] = index[i];
       }
-
-      beg_idx[i] = index[i] < 0 ? 0 : index[i];
-      end_idx[i] = index[i] < 0 ? m->shape[i] - 1 : index[i];
     }
 
-    matrix *sub = matrixCreate(newdims, newshape);
+    sub = matrixCreate(newdims, newshape);
 
     begin = getReshapedIndex(m, beg_idx);
     end = getReshapedIndex(m, end_idx);
@@ -91,7 +93,8 @@ matrix *matrixSlice(matrix *m, long long dims, long long *index) {
 }
 
 double matrixGetValueAtIndex(matrix *matrix, long long index[]) {
-    return matrix->values[getReshapedIndex(matrix, index)];
+    double value = matrix->values[getReshapedIndex(matrix, index)];
+    return value;
 }
 
 int matrixSetValueAtIndex(matrix *matrix, long long index[], double value) {
