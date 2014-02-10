@@ -83,8 +83,8 @@ matrix *matrixSlice(matrix *m, long long dims, long long *index) {
 
     for (i = 0; i < newdims; i++) newsize *= newshape[i];
 
-    for (i = begin, j = 0; i <= end; i += stride) {
-        sub->values[j++] = m->values[i];
+    for (i = begin, j = 0; i <= end; i += stride, j++) {
+        sub->values[j] = m->values[i];
     }
 
     return sub;
