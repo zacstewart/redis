@@ -41,7 +41,7 @@ matrix *matrixCreate(long long dims, long long shape[]) {
     if ((matrix = zmalloc(sizeof(*matrix))) == NULL)
         return NULL;
 
-    memcpy(&matrix->dims,&dims,sizeof(dims));
+    matrix->dims = dims;
 
     if ((matrix->shape = zmalloc(dims*sizeof(*matrix->shape))) == NULL)
         return NULL;
