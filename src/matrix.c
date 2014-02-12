@@ -3,6 +3,18 @@
 #include <stdio.h>
 #include <string.h>
 
+long long getReshapedIndex(matrix *m, long long index[]) {
+    long long idx = 0;
+
+    for (int i = 0; i < m->dims; i++) {
+        idx += index[i];
+
+        if (i < m->dims-1)
+            idx *= m->shape[i+1];
+    }
+    return idx;
+}
+
 void matrixPrint(matrix *m) {
     long long i, size = 1;
     printf("dims:\t%lld\n", m->dims);
@@ -47,18 +59,6 @@ void matrixFree(matrix *matrix) {
     zfree(matrix->shape);
     zfree(matrix->values);
     zfree(matrix);
-}
-
-long long getReshapedIndex(matrix *m, long long index[]) {
-    long long idx = 0;
-
-    for (int i = 0; i < m->dims; i++) {
-        idx += index[i];
-
-        if (i < m->dims-1)
-            idx *= m->shape[i+1];
-    }
-    return idx;
 }
 
 matrix *matrixSlice(matrix *m, long long dims, long long *index) {
