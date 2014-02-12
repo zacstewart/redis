@@ -5,6 +5,7 @@ typedef struct matrix {
     long long dims;
     long long *shape;
     double *values;
+    long long size;
 } matrix;
 
 matrix *matrixCreate(long long dims, long long shape[]);

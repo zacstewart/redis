@@ -16,18 +16,17 @@ long long getReshapedIndex(matrix *m, long long index[]) {
 }
 
 void matrixPrint(matrix *m) {
-    long long i, size = 1;
+    long long i;
     printf("dims:\t%lld\n", m->dims);
 
     printf("shape:\t[ ");
     for (i = 0; i<m->dims; i++) {
-        size *= m->shape[i];
         printf("%lld ", m->shape[i]);
     }
     printf("]\n");
 
     printf("values:\t[ ");
-    for (i = 0; i<size; i++) {
+    for (i = 0; i < m->size; i++) {
         printf("%f ", m->values[i]->value);
     }
     printf("]\n");
@@ -35,7 +34,6 @@ void matrixPrint(matrix *m) {
 
 matrix *matrixCreate(long long dims, long long shape[]) {
     struct matrix *matrix;
-    long long size = 1;
     int i;
 
     if ((matrix = zmalloc(sizeof(*matrix))) == NULL)
@@ -47,9 +45,10 @@ matrix *matrixCreate(long long dims, long long shape[]) {
         return NULL;
     memcpy(matrix->shape,shape,dims*sizeof(*matrix->shape));
 
-    for (i = 0; i < dims; i++) size *= shape[i];
+    matrix->size = 1;
 
     if ((matrix->values = zcalloc(size*sizeof(*matrix->values))) == NULL)
+    for (i = 0; i < dims; i++) matrix->size *= shape[i];
         return NULL;
 
     return matrix;
