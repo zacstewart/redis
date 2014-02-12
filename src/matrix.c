@@ -4,19 +4,21 @@
 #include <string.h>
 
 void matrixPrint(matrix *m) {
-  long long i, size = 1;
-  printf("dims:\t%lld\n", m->dims);
+    long long i, size = 1;
+    printf("dims:\t%lld\n", m->dims);
 
-  printf("shape:\t[ ");
-  for (i = 0; i<m->dims; i++) {
-    size *= m->shape[i];
-    printf("%lld ", m->shape[i]);
-  }
-  printf("]\n");
+    printf("shape:\t[ ");
+    for (i = 0; i<m->dims; i++) {
+        size *= m->shape[i];
+        printf("%lld ", m->shape[i]);
+    }
+    printf("]\n");
 
-  printf("values:\t[ ");
-  for (i = 0; i<size; i++) printf("%f ", m->values[i]);
-  printf("]\n");
+    printf("values:\t[ ");
+    for (i = 0; i<size; i++) {
+        printf("%f ", m->values[i]->value);
+    }
+    printf("]\n");
 }
 
 matrix *matrixCreate(long long dims, long long shape[]) {
