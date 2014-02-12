@@ -47,17 +47,12 @@ matrix *matrixCreate(long long dims, long long shape[]) {
 
     matrix->size = 1;
 
-    if ((matrix->values = zcalloc(size*sizeof(*matrix->values))) == NULL)
     for (i = 0; i < dims; i++) matrix->size *= shape[i];
+
+    if ((matrix->values = zmalloc(matrix->size * sizeof(scalar *))) == NULL)
         return NULL;
 
     return matrix;
-}
-
-void matrixFree(matrix *matrix) {
-    zfree(matrix->shape);
-    zfree(matrix->values);
-    zfree(matrix);
 }
 
 matrix *matrixSlice(matrix *m, long long dims, long long *index) {
@@ -83,14 +78,34 @@ matrix *matrixSlice(matrix *m, long long dims, long long *index) {
     end = getReshapedIndex(m, end_idx);
 
     for (i = begin, j = 0; i <= end; i += stride, j++) {
-        sub->values[j] = m->values[i];
+        scalarRetain(sub->values[j] = m->values[i]);
     }
 
     return sub;
 }
 
+void matrixFree(matrix *matrix) {
+    int i;
+    for (i = 0; i < matrix->size; i++) {
+        scalarRelease(matrix->values[i]);
+    }
+    zfree(matrix->values);
+    zfree(matrix->shape);
+    zfree(matrix);
+}
+
+void scalarRelease(scalar *scalar) {
+    if (scalar->reference_count <= 0) printf("scalarRelease against refcount <= 0");
+    if (scalar->reference_count == 1) zfree(scalar);
+    else --scalar->reference_count;
+}
+
+void scalarRetain(scalar *scalar) {
+    ++scalar->reference_count;
+}
+
 double matrixGetValueAtIndex(matrix *matrix, long long index[]) {
-    double value = matrix->values[getReshapedIndex(matrix, index)];
+    double value = matrix->values[getReshapedIndex(matrix, index)]->value;
     return value;
 }
 

@@ -24,7 +24,7 @@ void addReplyMatrixContent(redisClient *c, matrix *m) {
     }
 
     for (i = 0; i < size; i++) {
-        addReplyBulkDouble(c,m->values[i]);
+        addReplyBulkDouble(c,m->values[i]->value);
     }
 }
 
