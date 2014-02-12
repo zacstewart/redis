@@ -61,7 +61,7 @@ void matrixFree(matrix *matrix) {
 }
 
 matrix *matrixSlice(matrix *m, long long dims, long long *index) {
-    long long i, j, begin = 1, end = 0, stride = 1, newdims = 0, newsize = 1;
+    long long i, j, begin = 1, end = 0, stride = 1, newdims = 0;
     long long beg_idx[dims], end_idx[dims], newshape[dims];
     matrix *sub;
 
@@ -81,8 +81,6 @@ matrix *matrixSlice(matrix *m, long long dims, long long *index) {
 
     begin = getReshapedIndex(m, beg_idx);
     end = getReshapedIndex(m, end_idx);
-
-    for (i = 0; i < newdims; i++) newsize *= newshape[i];
 
     for (i = begin, j = 0; i <= end; i += stride, j++) {
         sub->values[j] = m->values[i];
