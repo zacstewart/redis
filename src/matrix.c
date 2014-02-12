@@ -121,8 +121,11 @@ double matrixGetValueAtIndex(matrix *matrix, long long index[]) {
     return value;
 }
 
-int matrixSetValueAtIndex(matrix *matrix, long long index[], double value) {
-    long long idx = getReshapedIndex(matrix, index);
-    memcpy(&matrix->values[idx],&value,sizeof(&value));
+int matrixSetValues(matrix *matrix, double value) {
+    long long i;
+
+    for (i = 0; i < matrix->size; i++) {
+        matrix->values[i]->value = value;
+    }
     return 1; // TODO: error handling
 }

@@ -94,11 +94,13 @@ void xsetCommand(redisClient *c) {
         return;
     }
 
-    if (matrixSetValueAtIndex(m,index,value)) {
-        signalModifiedKey(c->db,c->argv[1]);
-        notifyKeyspaceEvent(REDIS_NOTIFY_MATRIX,"xset",c->argv[1],c->db->id);
-        server.dirty += 1;
-    }
+    matrix *sub = matrixSlice(m, dims, index);
+
+    matrixSetValues(sub,value);
+
+    notifyKeyspaceEvent(REDIS_NOTIFY_MATRIX,"xset",c->argv[1],c->db->id);
+    server.dirty += 1;
 
     addReplyMatrixShape(c,m);
+    matrixFree(sub);
 }
