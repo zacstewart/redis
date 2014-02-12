@@ -66,15 +66,15 @@ matrix *matrixSlice(matrix *m, long long dims, long long *index) {
     matrix *sub;
 
     for (i = 0; i < dims; i++) {
-      if (index[i] == -1) {
-          newshape[newdims++] = m->shape[i];
-          beg_idx[i] = 0;
-          end_idx[i] = m->shape[i] - 1;
-      } else {
-          stride += i * (m->shape[i] - 1);
-          beg_idx[i] = index[i];
-          end_idx[i] = index[i];
-      }
+        if (index[i] == -1) {
+            newshape[newdims++] = m->shape[i];
+            beg_idx[i] = 0;
+            end_idx[i] = m->shape[i] - 1;
+        } else {
+            stride += i * (m->shape[i] - 1);
+            beg_idx[i] = index[i];
+            end_idx[i] = index[i];
+        }
     }
 
     sub = matrixCreate(newdims, newshape);
