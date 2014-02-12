@@ -171,7 +171,7 @@ robj *createZiplistObject(void) {
 }
 
 robj *createMatrixObject(long long dims, long long shape[]) {
-    matrix *m = matrixCreate(dims, shape);
+    matrix *m = matrixZero(dims, shape);
     robj *o = createObject(REDIS_MATRIX,m);
     o->encoding = REDIS_ENCODING_MATRIX;
     return o;

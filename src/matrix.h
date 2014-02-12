@@ -13,6 +13,7 @@ typedef struct matrix {
     scalar **values;
 } matrix;
 
+matrix *matrixZero(long long dims, long long shape[]);
 matrix *matrixCreate(long long dims, long long shape[]);
 void matrixFree(matrix *matrix);
 void matrixPrint(matrix *m);

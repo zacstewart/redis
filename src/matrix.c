@@ -32,6 +32,18 @@ void matrixPrint(matrix *m) {
     printf("]\n");
 }
 
+matrix *matrixZero(long long dims, long long shape[]) {
+    int i;
+    matrix *matrix = matrixCreate(dims, shape);
+
+    for (i = 0; i < matrix->size; i++) {
+        matrix->values[i] = zmalloc(sizeof(scalar));
+        matrix->values[i]->value = 0.0;
+        matrix->values[i]->reference_count = 1;
+    }
+    return matrix;
+}
+
 matrix *matrixCreate(long long dims, long long shape[]) {
     struct matrix *matrix;
     int i;
