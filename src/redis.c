@@ -118,7 +118,7 @@ struct redisCommand *commandTable;
  */
 struct redisCommand redisCommandTable[] = {
     {"xget",xgetCommand,-3,"r",0,NULL,1,1,1,0,0},
-    {"xset",xsetCommand,-4,"r",0,NULL,1,1,1,0,0},
+    {"xset",xsetCommand,-4,"wm",0,NULL,1,1,1,0,0},
     {"get",getCommand,2,"r",0,NULL,1,1,1,0,0},
     {"set",setCommand,-3,"wm",0,noPreloadGetKeys,1,1,1,0,0},
     {"setnx",setnxCommand,3,"wm",0,noPreloadGetKeys,1,1,1,0,0},
