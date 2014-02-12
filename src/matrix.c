@@ -116,11 +116,6 @@ void scalarRetain(scalar *scalar) {
     ++scalar->reference_count;
 }
 
-double matrixGetValueAtIndex(matrix *matrix, long long index[]) {
-    double value = matrix->values[getReshapedIndex(matrix, index)]->value;
-    return value;
-}
-
 int matrixSetValues(matrix *matrix, double value) {
     long long i;
 
