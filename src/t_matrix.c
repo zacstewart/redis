@@ -90,8 +90,7 @@ void xgetCommand(redisClient *c) {
 }
 
 void xsetCommand(redisClient *c) {
-    long long dims = 0;
-    dims = c->argc - 3;
+    long long dims = c->argc - 3;
     long long index[dims], shape[dims];
     double value;
 
