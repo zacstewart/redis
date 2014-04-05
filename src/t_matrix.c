@@ -52,7 +52,7 @@ void createMatrixGenericCommand(redisClient *c, double value) {
 
   matrix *m = xobj->ptr;
 
-  matrixSetValues(m,value);
+  matrixSetValues(m,value,1);
   addReplyMatrixShape(c,m);
 }
 
@@ -123,7 +123,7 @@ void xsetCommand(redisClient *c) {
 
     matrix *sub = matrixSlice(m, dims, index);
 
-    matrixSetValues(sub,value);
+    matrixSetValues(sub,value,1);
 
     notifyKeyspaceEvent(REDIS_NOTIFY_MATRIX,"xset",c->argv[1],c->db->id);
     server.dirty += 1;
@@ -144,7 +144,6 @@ void xeyeCommand(redisClient *c) {
   robj *xobj = lookupKeyWrite(c->db,c->argv[1]);
   long long size;
   long long shape[2];
-  int i;
 
   getLongLongFromObjectOrReply(c,c->argv[2],&size,NULL);
   shape[0] = shape[1] = size;
@@ -161,10 +160,7 @@ void xeyeCommand(redisClient *c) {
   }
 
   matrix *m = xobj->ptr;
-
-  for (i = 0; i <= (size * size); i += (size + 1)) {
-    m->values[i]->value = 1;
-  }
+  matrixSetValues(m,1,size + 1);
 
   addReplyMatrixShape(c,m);
 }

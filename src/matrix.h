@@ -20,6 +20,6 @@ void matrixPrint(matrix *m);
 matrix *matrixSlice(matrix *matrix, long long dims, long long index[]);
 void scalarRelease(scalar *scalar);
 void scalarRetain(scalar *scalar);
-int matrixSetValues(matrix *m, double value);
+int matrixSetValues(matrix *m, double value, int stride);
 
 #endif /* __MATRIX_H__ */

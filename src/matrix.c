@@ -116,10 +116,10 @@ void scalarRetain(scalar *scalar) {
     ++scalar->reference_count;
 }
 
-int matrixSetValues(matrix *matrix, double value) {
+int matrixSetValues(matrix *matrix, double value, int stride) {
     long long i;
 
-    for (i = 0; i < matrix->size; i++) {
+    for (i = 0; i < matrix->size; i += stride) {
         matrix->values[i]->value = value;
     }
     return 1; // TODO: error handling
