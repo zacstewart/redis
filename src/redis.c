@@ -121,6 +121,7 @@ struct redisCommand redisCommandTable[] = {
     {"xset",xsetCommand,-4,"wm",0,NULL,1,1,1,0,0},
     {"xzeros",xzerosCommand,-3,"wm",0,NULL,1,1,1,0,0},
     {"xones",xonesCommand,-3,"wm",0,NULL,1,1,1,0,0},
+    {"xeye",xeyeCommand,4,"wm",0,NULL,1,1,1,0,0},
     {"get",getCommand,2,"r",0,NULL,1,1,1,0,0},
     {"set",setCommand,-3,"wm",0,noPreloadGetKeys,1,1,1,0,0},
     {"setnx",setnxCommand,3,"wm",0,noPreloadGetKeys,1,1,1,0,0},

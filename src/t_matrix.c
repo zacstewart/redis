@@ -139,3 +139,32 @@ void xzerosCommand(redisClient *c) {
 void xonesCommand(redisClient *c) {
   createMatrixGenericCommand(c,1);
 }
+
+void xeyeCommand(redisClient *c) {
+  robj *xobj = lookupKeyWrite(c->db,c->argv[1]);
+  long long size;
+  long long shape[2];
+  int i;
+
+  getLongLongFromObjectOrReply(c,c->argv[2],&size,NULL);
+  shape[0] = shape[1] = size;
+
+  if (xobj && xobj->type != REDIS_MATRIX) {
+    addReply(c,shared.wrongtypeerr);
+    return;
+  }
+
+  if (!xobj) {
+    xobj = createMatrixObject(2,shape);
+    dbAdd(c->db,c->argv[1],xobj);
+    incrRefCount(xobj);
+  }
+
+  matrix *m = xobj->ptr;
+
+  for (i = 0; i <= (size * size); i += (size + 1)) {
+    m->values[i]->value = 1;
+  }
+
+  addReplyMatrixShape(c,m);
+}

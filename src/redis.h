@@ -1288,6 +1288,7 @@ void xgetCommand(redisClient *c);
 void xsetCommand(redisClient *c);
 void xzerosCommand(redisClient *c);
 void xonesCommand(redisClient *c);
+void xeyeCommand(redisClient *c);
 void setrangeCommand(redisClient *c);
 void getrangeCommand(redisClient *c);
 void incrCommand(redisClient *c);
