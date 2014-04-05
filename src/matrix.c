@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-long long getReshapedIndex(matrix *m, long long index[]) {
+long long reshapedIndex(matrix *m, long long index[]) {
     long long idx = 0;
 
     for (int i = 0; i < m->dims; i++) {
@@ -86,8 +86,8 @@ matrix *matrixSlice(matrix *m, long long dims, long long *index) {
 
     sub = matrixCreate(newdims, newshape);
 
-    begin = getReshapedIndex(m, beg_idx);
-    end = getReshapedIndex(m, end_idx);
+    begin = reshapedIndex(m, beg_idx);
+    end = reshapedIndex(m, end_idx);
 
     for (i = begin, j = 0; i <= end; i += stride, j++) {
         scalarRetain(sub->values[j] = m->values[i]);
