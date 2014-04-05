@@ -593,25 +593,23 @@ int rdbSaveObject(rio *rdb, robj *o) {
     } else if (o->type == REDIS_MATRIX) {
         printf("Saving matrix\n");
 
-        /*matrix *matrix = o->ptr;*/
+        matrix *matrix = o->ptr;
 
-        /*if ((n = rdbSaveLongLongAsStringObject(rdb,matrix->dims)) == -1)*/
-            /*return -1;*/
-        /*nwritten += n;*/
+        if ((n = rdbSaveLongLongAsStringObject(rdb,matrix->dims)) == -1)
+            return -1;
+        nwritten += n;
 
-        /*int n_values = 1;*/
-        /*for (int i = 0; i < matrix->dims; i++) {*/
-            /*if ((n = rdbSaveLongLongAsStringObject(rdb,matrix->shape[i])) == -1)*/
-                /*return -1;*/
-            /*nwritten = n;*/
-            /*n_values *= matrix->shape[i];*/
-        /*}*/
+        for (int i = 0; i < matrix->dims; i++) {
+            if ((n = rdbSaveLongLongAsStringObject(rdb,matrix->shape[i])) == -1)
+                return -1;
+            nwritten = n;
+        }
 
-        /*for (int i = 0; i < n_values; i++) {*/
-            /*if ((n = rdbSaveDoubleValue(rdb,matrix->values[i])) == -1)*/
-                /*return -1;*/
-            /*nwritten += n;*/
-        /*}*/
+        for (int i = 0; i < matrix->size; i++) {
+            if ((n = rdbSaveDoubleValue(rdb,matrix->values[i]->value)) == -1)
+                return -1;
+            nwritten += n;
+        }
     } else {
         redisPanic("Unknown object type");
     }
@@ -1049,6 +1047,28 @@ robj *rdbLoadObject(int rdbtype, rio *rdb) {
                 break;
         }
     } else if (rdbtype == REDIS_RDB_TYPE_MATRIX) {
+      long long dims;
+
+      if ((ele = rdbLoadEncodedStringObject(rdb)) == NULL) return NULL;
+      ele = tryObjectEncoding(ele);
+      isObjectRepresentableAsLongLong(ele,&dims);
+
+      long long shape[dims];
+
+      for (i = 0; i < dims; i++) {
+        if ((ele = rdbLoadEncodedStringObject(rdb)) == NULL) return NULL;
+        ele = tryObjectEncoding(ele);
+        isObjectRepresentableAsLongLong(ele,&shape[i]);
+      }
+
+      o = createMatrixObject(dims,shape);
+      matrix *matrix = o->ptr;
+
+      for (i = 0; i < matrix->size; i++) {
+        if (rdbLoadDoubleValue(rdb,&matrix->values[i]->value) == -1) return NULL;
+      }
+
+      incrRefCount(o);
     } else {
         redisPanic("Unknown object type");
     }
