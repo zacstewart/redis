@@ -28,7 +28,7 @@ void addReplyMatrixContent(redisClient *c, matrix *m) {
     }
 }
 
-void createMatrixGenericCommand(redisClient *c, double value) {
+void createMatrixGenericCommand(redisClient *c, double value, int stride) {
   long long dims = c->argc - 2;
   long long shape[dims];
   int i;
@@ -52,7 +52,7 @@ void createMatrixGenericCommand(redisClient *c, double value) {
 
   matrix *m = xobj->ptr;
 
-  matrixSetValues(m,value,1);
+  matrixSetValues(m,value,stride);
   addReplyMatrixShape(c,m);
 }
 
@@ -133,34 +133,17 @@ void xsetCommand(redisClient *c) {
 }
 
 void xzerosCommand(redisClient *c) {
-  createMatrixGenericCommand(c,0);
+  createMatrixGenericCommand(c,0,1);
 }
 
 void xonesCommand(redisClient *c) {
-  createMatrixGenericCommand(c,1);
+  createMatrixGenericCommand(c,1,1);
 }
 
 void xeyeCommand(redisClient *c) {
   robj *xobj = lookupKeyWrite(c->db,c->argv[1]);
   long long size;
-  long long shape[2];
-
   getLongLongFromObjectOrReply(c,c->argv[2],&size,NULL);
-  shape[0] = shape[1] = size;
 
-  if (xobj && xobj->type != REDIS_MATRIX) {
-    addReply(c,shared.wrongtypeerr);
-    return;
-  }
-
-  if (!xobj) {
-    xobj = createMatrixObject(2,shape);
-    dbAdd(c->db,c->argv[1],xobj);
-    incrRefCount(xobj);
-  }
-
-  matrix *m = xobj->ptr;
-  matrixSetValues(m,1,size + 1);
-
-  addReplyMatrixShape(c,m);
+  createMatrixGenericCommand(c,1,size + 1);
 }
